@@ -1,3 +1,15 @@
+---
+title: Design Critique Panel
+emoji: 🎨
+colorFrom: indigo
+colorTo: purple
+sdk: gradio
+sdk_version: 4.44.0
+app_file: app.py
+pinned: false
+license: mit
+---
+
 # Design Critique Panel
 
 A multi-persona AI critique workflow. Sends a design image to a panel of six specialist critics in parallel, then synthesizes their findings into a single ranked action list.
@@ -37,6 +49,23 @@ python app.py
 ```
 
 It opens at `http://localhost:7860`. Drag-drop a screenshot (or paste with Cmd+V), optionally add more screens and context, pick which critics to run, and hit **Critique**. Each critic's panel fills in as it returns; the synthesis lands at the top once they all finish.
+
+## Deploy to Hugging Face Spaces
+
+The repo is already configured as a Space (see the YAML frontmatter at the top of this file). To deploy:
+
+1. **Create a Space.** Go to [huggingface.co/new-space](https://huggingface.co/new-space). Pick a name. Set **SDK** to *Gradio* and **Hardware** to *CPU basic* (free). Visibility: *Public*.
+2. **Add the API key as a secret.** In your Space, go to **Settings → Variables and secrets → New secret**. Name it `GEMINI_API_KEY` and paste your key. Secrets are encrypted and never exposed to visitors.
+3. **Push the code.** Hugging Face gives you a git URL like `https://huggingface.co/spaces/<you>/<space-name>`. Add it as a remote and push:
+   ```bash
+   git remote add space https://huggingface.co/spaces/<you>/<space-name>
+   git push space main
+   ```
+   (First push may prompt for an HF access token — generate one at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) with `write` scope.)
+4. **Wait for the build.** The Space rebuilds automatically. You'll see logs in the "Logs" tab. First build takes 3–5 minutes (installing gradio + google-genai). Subsequent pushes are faster.
+5. **Use it.** Your Space is live at `https://huggingface.co/spaces/<you>/<space-name>`. Share that URL with anyone.
+
+Quota notes: HF's free CPU tier sleeps the Space after ~48h of inactivity — first visit after a sleep takes ~30s to wake. Gemini quota is on your account; anyone using the public URL consumes it.
 
 ## CLI Usage
 
